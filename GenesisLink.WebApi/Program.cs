@@ -1,4 +1,11 @@
+using GenesisLink.BOL;
 using GenesisLink.DAL;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.Intrinsics.X86;
 
 namespace GenesisLink.WebApi
 {
@@ -8,13 +15,43 @@ namespace GenesisLink.WebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("LocalConnection")));
+
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
             // Add services to the container.
 
+            builder.Services.AddCors();
             builder.Services.AddControllers();
-            builder.Services.AddDbContext<AppDbContext>();
+
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddEndpointsApiExplorer();
+
+
+            builder.Services.ConfigureApplicationCookie(opt =>
+            {
+                opt.Events = new CookieAuthenticationEvents()
+                {
+                    //Authentication
+                    OnRedirectToLogin = redirectContext =>
+                    {
+                        redirectContext.HttpContext.Response.StatusCode = 403;
+                        return Task.CompletedTask;
+                    },
+                    OnRedirectToAccessDenied = redirectContext =>
+                    {
+                        redirectContext.HttpContext.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
             var app = builder.Build();
 
@@ -32,7 +69,15 @@ namespace GenesisLink.WebApi
 
             app.UseHttpsRedirection();
 
+            app.UseCors(x => x.WithOrigins("http://localhost:4010")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowCredentials());
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            //CreateRoles(serviceProvider);
 
 
             app.MapControllers();
@@ -40,4 +85,6 @@ namespace GenesisLink.WebApi
             app.Run();
         }
     }
+
+
 }
