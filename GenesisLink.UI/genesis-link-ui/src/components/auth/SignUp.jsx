@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import api from "../../config.json";
 
 function Copyright(props) {
   return (
@@ -22,12 +23,11 @@ function Copyright(props) {
       align="center"
       {...props}
     >
-      {"Copyright � "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
+      {"© Genesis Link "}
+      {/* <Link color="inherit" href="https://mui.com/">
+        Genesis Link
+      </Link>{" "} */}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
@@ -38,13 +38,43 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const signUpUserData = {
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+    console.log(signUpUserData);
+
+    const signUpUserApi = async () => {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signUpUserData),
+      };
+
+      const response = await fetch(`${api.ACCOUNTS}signup`, options);
+
+      if (!response.ok) {
+        console.log(response.status, response.statusText);
+        window.alert("Error creating user account. Please contact support.");
+      } else {
+        console.log(`Account created succesfully`);
+        window.alert(
+          "Account created succesfully. Please sign in with your email and password."
+        );
+        const signUpResponseFromApi = await response.json();
+        console.log(signUpResponseFromApi);
+        navigate("/login");
+      }
+    };
+    signUpUserApi();
   };
 
   return (

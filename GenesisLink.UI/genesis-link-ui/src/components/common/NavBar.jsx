@@ -17,10 +17,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { styled, alpha } from "@mui/material/styles";
 import "./NavBar.css";
+import api from "../../config.json";
 /*import { SearchBar } from "../search/SearchBar";*/
 
 const pages = ["Wallets", "Markets", "Transactions"];
-const settings = ["Profile", "Logout"];
+const settings = ["Profile", "SignOut"];
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -181,9 +182,34 @@ const NavBar = () => {
                   key={setting}
                   onClick={() => {
                     console.log(setting);
-                    if (setting.toLowerCase() === "logout") {
-                      sessionStorage.clear();
-                      navigate(`/`);
+                    if (setting.toLowerCase() === "signout") {
+                      const signOutUserApi = async () => {
+                        const options = {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                        };
+
+                        const response = await fetch(
+                          `${api.ACCOUNTS}signout`,
+                          options
+                        );
+
+                        if (!response.ok) {
+                          console.log(response.status, response.statusText);
+                          window.alert(
+                            "Unable to Signout. Please try again later."
+                          );
+                        } else {
+                          console.log(`User signed out succesfully`);
+                          // const signOutResponseFromApi = await response.json();
+                          // console.log(signOutResponseFromApi);
+                          sessionStorage.clear();
+                          navigate(`/`);
+                        }
+                      };
+                      signOutUserApi();
                     }
                     navigate(`/${setting.toLowerCase()}`);
                   }}

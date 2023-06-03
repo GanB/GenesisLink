@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import api from "../../config.json";
 
 function Copyright(props) {
   return (
@@ -41,19 +42,43 @@ export default function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
+    const signInData = {
+      emailId: data.get("email"),
       password: data.get("password"),
-    });
-    sessionStorage.setItem(
-      "app_user",
-      JSON.stringify({
-        email: data.get("email"),
-        isAuthenticated: true,
-      })
-    );
+    };
+    console.log(signInData);
 
-    navigate("/home");
+    const signInUserApi = async () => {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signInData),
+      };
+
+      const response = await fetch(`${api.ACCOUNTS}signin`, options);
+
+      if (!response.ok) {
+        console.log(response.status, response.statusText);
+        window.alert("Invalid UserName Or Password");
+      } else {
+        console.log(`User signed in succesfully`);
+        const signInResponseFromApi = await response.json();
+        console.log(signInResponseFromApi);
+        sessionStorage.setItem(
+          "app_user",
+          JSON.stringify({
+            id: signInResponseFromApi.id,
+            emailId: signInResponseFromApi.userName,
+            role: signInResponseFromApi.role,
+            isAuthenticated: true,
+          })
+        );
+        navigate("/home");
+      }
+    };
+    signInUserApi();
   };
 
   return (

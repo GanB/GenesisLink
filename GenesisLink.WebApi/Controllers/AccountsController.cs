@@ -55,5 +55,40 @@ namespace GenesisLink.WebApi.Controllers
                 return StatusCode(500, $"Internal Server Error! - {ex}");
             }
         }
+
+        [HttpPost("signin")]
+        public async Task<IActionResult> SignIn(SignInViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var signInResult = await signInManager.PasswordSignInAsync(model.EmailId, model.Password, false, false);
+
+                    if (signInResult.Succeeded)
+                    {
+                        var user = await userManager.FindByNameAsync(model.EmailId);
+                        var roles = await userManager.GetRolesAsync(user);
+                        return Ok(new { id = user.Id, userName = user.UserName, role = roles[0] });
+                    }
+                    else
+                    {
+                        return BadRequest("Invalid UserName Or Password");
+                    }
+                }
+                return BadRequest(ModelState);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error! - {ex}");
+            }
+        }
+
+        [HttpPost("signout")]
+        public async Task<IActionResult> LogOut()
+        {
+            await signInManager.SignOutAsync();
+            return NoContent();
+        }
     }
 }
