@@ -30,8 +30,16 @@ namespace GenesisLink.WebApi.Controllers
                 {
                     var user = new AppUser()
                     {
-                        UserName = model.Email,
-                        Email = model.Email
+                        UserName = model.EmailId,
+                        Email = model.EmailId,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        AddressLine1 = model.AddressLine1,
+                        AddressLine2 = model.AddressLine2,
+                        City = model.City,  
+                        State = model.State,
+                        Zip = model.Zip,
+                        ProfilePictureUrl = model.ProfilePictureUrl
                     };
 
                     var userResult = await userManager.CreateAsync(user, model.Password);

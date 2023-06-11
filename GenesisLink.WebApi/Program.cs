@@ -14,9 +14,10 @@ namespace GenesisLink.WebApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            IConfiguration configuration = builder.Configuration;
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-                builder.Configuration.GetConnectionString("LocalConnection")));
+                configuration.GetConnectionString("LocalConnection")));
 
             builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>()
@@ -69,10 +70,15 @@ namespace GenesisLink.WebApi
 
             app.UseHttpsRedirection();
 
-            app.UseCors(x => x.WithOrigins("http://localhost:4010")
+            app.UseCors(x => x.WithOrigins(configuration.GetSection("App:Origins").GetChildren().Select(x => x.Value).ToArray())
                               .AllowAnyMethod()
                               .AllowAnyHeader()
                               .AllowCredentials());
+
+            //app.UseCors(x => x.WithOrigins("http://localhost:4010")
+            //                  .AllowAnyMethod()
+            //                  .AllowAnyHeader()
+            //                  .AllowCredentials());
 
             app.UseAuthentication();
             app.UseAuthorization();

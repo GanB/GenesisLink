@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GenesisLink.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230531040305_AddAppUserTable")]
-    partial class AddAppUserTable
+    [Migration("20230611041457_InitialDBCreation")]
+    partial class InitialDBCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,182 @@ namespace GenesisLink.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("GenesisLink.BOL.MarketData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("CreatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("LastKnownPrice")
+                        .HasColumnType("Numeric(10,2)");
+
+                    b.Property<string>("Symbol")
+                        .HasColumnType("NVARCHAR(50)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("UpdatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Volume")
+                        .HasColumnType("Numeric(10,0)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MarketData");
+                });
+
+            modelBuilder.Entity("GenesisLink.BOL.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("Numeric(10,2)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("CreatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DestinationWalletAddress")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<string>("SourceWalletAddress")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<string>("TransactionMessage")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("UpdatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("GenesisLink.BOL.UserMarketData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("CreatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("MarketDataId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("UpdatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarketDataId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserMarketData");
+                });
+
+            modelBuilder.Entity("GenesisLink.BOL.UserWallet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("CreatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("UpdatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<Guid?>("WalletId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("UserWallets");
+                });
+
+            modelBuilder.Entity("GenesisLink.BOL.Wallet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Balance")
+                        .HasColumnType("Numeric(10,2)");
+
+                    b.Property<string>("ChainSource")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("CreatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsLocked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("UpdatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WalletAddress")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<string>("WalletName")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Wallets");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -53,14 +229,14 @@ namespace GenesisLink.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c3c75ff0-688e-4108-9e65-2a10010127f3",
+                            Id = "c8c22ff3-b9dd-4dbd-84bc-6999d841e8a5",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "7bac34fb-7519-47f2-b1d0-f893407e06fd",
+                            Id = "01e6d854-ccbd-4dd6-9f14-823e56686e52",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
@@ -242,10 +418,82 @@ namespace GenesisLink.DAL.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("profilePicPath")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("AddressLine1")
+                        .HasColumnType("VARCHAR(100)");
 
-                    b.ToTable("AppUser");
+                    b.Property<string>("AddressLine2")
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("CreatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("VARCHAR(100)");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("VARCHAR(MAX)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("VARCHAR(50)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("NVARCHAR(450)");
+
+                    b.Property<DateTime?>("UpdatedTS")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Zip")
+                        .HasColumnType("VARCHAR(50)");
+
+                    b.ToTable("AppUsers");
+                });
+
+            modelBuilder.Entity("GenesisLink.BOL.Transaction", b =>
+                {
+                    b.HasOne("GenesisLink.BOL.AppUser", "AppUserNav")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("AppUserNav");
+                });
+
+            modelBuilder.Entity("GenesisLink.BOL.UserMarketData", b =>
+                {
+                    b.HasOne("GenesisLink.BOL.MarketData", "MarketDataNav")
+                        .WithMany()
+                        .HasForeignKey("MarketDataId");
+
+                    b.HasOne("GenesisLink.BOL.AppUser", "AppUserNav")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("AppUserNav");
+
+                    b.Navigation("MarketDataNav");
+                });
+
+            modelBuilder.Entity("GenesisLink.BOL.UserWallet", b =>
+                {
+                    b.HasOne("GenesisLink.BOL.AppUser", "AppUserNav")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("GenesisLink.BOL.Wallet", "WalletNav")
+                        .WithMany()
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("AppUserNav");
+
+                    b.Navigation("WalletNav");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

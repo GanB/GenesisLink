@@ -10,7 +10,7 @@ namespace GenesisLink.DAL
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
+            Database.Migrate();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -24,6 +24,11 @@ namespace GenesisLink.DAL
 
 
         public DbSet<AppUser>? AppUsers { get; set; }
+        public DbSet<Wallet>? Wallets { get; set; }
+        public DbSet<UserWallet>? UserWallets { get; set; }
+        public DbSet<Transaction>? Transactions { get; set; }
+        public DbSet<MarketData>? MarketData { get; set; }
+        public DbSet<UserMarketData>? UserMarketData { get; set; }
 
         private static void SeedRoles(ModelBuilder modelBuilder)
         {
