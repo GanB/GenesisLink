@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisLink.BOL", "GenesisL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisLink.DAL", "GenesisLink.DAL\GenesisLink.DAL.csproj", "{6882ECDF-68B4-4ACC-8607-1F53F7783048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenesisLink.UI", "GenesisLink.UI\GenesisLink.UI.csproj", "{AB3B3649-B17C-4B3C-87CC-1A4C0B8A908E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenesisLink.UI", "GenesisLink.UI\GenesisLink.UI.csproj", "{AB3B3649-B17C-4B3C-87CC-1A4C0B8A908E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenesisLink.SmartContract", "GenesisLink.SmartContract\GenesisLink.SmartContract.csproj", "{C2D6BBFE-31DE-4F81-9D09-C7A35BE5F9C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AB3B3649-B17C-4B3C-87CC-1A4C0B8A908E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB3B3649-B17C-4B3C-87CC-1A4C0B8A908E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB3B3649-B17C-4B3C-87CC-1A4C0B8A908E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2D6BBFE-31DE-4F81-9D09-C7A35BE5F9C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2D6BBFE-31DE-4F81-9D09-C7A35BE5F9C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2D6BBFE-31DE-4F81-9D09-C7A35BE5F9C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2D6BBFE-31DE-4F81-9D09-C7A35BE5F9C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
