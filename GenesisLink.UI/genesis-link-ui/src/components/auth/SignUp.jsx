@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -8,11 +8,17 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import states from "../data/us_states.json";
 import api from "../../config.json";
 
 function Copyright(props) {
@@ -38,6 +44,7 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const [state, setState] = React.useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -45,8 +52,14 @@ export default function SignUp() {
     const signUpUserData = {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
-      email: data.get("email"),
+      addressLine1: data.get("addressLine1"),
+      addressLine2: data.get("addressLine2"),
+      city: data.get("city"),
+      state: state,
+      zip: data.get("zip"),
+      emailId: data.get("email"),
       password: data.get("password"),
+      profilePictureUrl: "",
     };
     console.log(signUpUserData);
 
@@ -121,6 +134,68 @@ export default function SignUp() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="addressLine1"
+                  label="Address Line 1"
+                  name="addressLine1"
+                  autoComplete="street-address"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="addressLine2"
+                  label="Address Line 2"
+                  name="addressLine2"
+                  autoComplete="street-address"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="city"
+                  label="City"
+                  name="city"
+                  autoComplete="address-level2"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="state-label">State</InputLabel>
+                  <Select
+                    labelId="state"
+                    id="state"
+                    value={state}
+                    label="State"
+                    onChange={(e) => {
+                      setState(e.target.value);
+                    }}
+                  >
+                    {Object.keys(states).map((x, index) => {
+                      return (
+                        <MenuItem key={index} value={states[x]}>
+                          {states[x]}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="zip"
+                  label="Zip"
+                  name="zip"
+                  autoComplete="postal-code"
                 />
               </Grid>
               <Grid item xs={12}>

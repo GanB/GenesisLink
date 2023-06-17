@@ -1,0 +1,13 @@
+{
+  "name": "genesis-link.smart-contracts",
+  "version": "0.0.0",
+  "description": "GenesisLink.SmartContracts",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "devDependencies": {
+    "eslint": "^8.43.0"
+  },
+  "eslintConfig": {}
+}

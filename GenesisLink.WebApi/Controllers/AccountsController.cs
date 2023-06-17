@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.Intrinsics.X86;
 
 namespace GenesisLink.WebApi.Controllers
@@ -77,7 +78,20 @@ namespace GenesisLink.WebApi.Controllers
                     {
                         var user = await userManager.FindByNameAsync(model.EmailId);
                         var roles = await userManager.GetRolesAsync(user);
-                        return Ok(new { id = user.Id, userName = user.UserName, role = roles[0] });
+                        return Ok(new { 
+                            id = user.Id, 
+                            userName = user.UserName, 
+                            role = roles[0],
+                            firstName = user.FirstName,
+                            lastName= user.LastName,
+                            addressLine1= user.AddressLine1,
+                            addressLine2= user.AddressLine2,
+                            city= user.City,
+                            state= user.State,
+                            zip= user.Zip,
+                            email=user.Email,
+                            profilePictureUrl= user.ProfilePictureUrl,
+                        });
                     }
                     else
                     {
@@ -97,6 +111,27 @@ namespace GenesisLink.WebApi.Controllers
         {
             await signInManager.SignOutAsync();
             return NoContent();
+        }
+
+        // DELETE: api/Accounts/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccount(string id)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return BadRequest("User Not Found");
+                }
+
+                await userManager.RemovePasswordAsync(user);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error! - {ex}");
+            }
         }
     }
 }

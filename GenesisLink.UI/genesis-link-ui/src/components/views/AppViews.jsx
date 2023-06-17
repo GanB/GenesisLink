@@ -1,5 +1,6 @@
 import { Outlet, Route, Routes } from "react-router-dom";
 import Footer from "../common/Footer";
+import Profile from "../profiles/Profile";
 import Drawer from "@mui/material/Drawer";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -8,6 +9,9 @@ import ListItemText from "@mui/material/ListItemText";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import Home from "../home/Home";
+import Wallets from "../wallets/Wallets";
+import Markets from "../markets/Markets";
+import Transactions from "../transactions/Transactions";
 
 const AppViews = (props) => {
   const appUser = JSON.parse(sessionStorage.getItem("app_user"));
@@ -26,10 +30,10 @@ const AppViews = (props) => {
         }
       >
         <Route path="home" element={<Home />} />
-        {/*<Route path="trade" element={<TradeContainer />} />*/}
-        {/*<Route path="trade/edit/:tradeId" element={<EditTrade />} />*/}
-        {/*<Route path="watchlist" element={<Watchlist />} />*/}
-        {/*<Route path="profile" element={<Profile />} />*/}
+        <Route path="wallets" element={<Wallets />} />
+        <Route path="markets" element={<Markets />} />
+        <Route path="transactions" element={<Transactions />} />
+        <Route path="profile" element={<Profile />} />
         {/*<Route path="search-result" element={<SearchResults />} />*/}
       </Route>
     </Routes>
