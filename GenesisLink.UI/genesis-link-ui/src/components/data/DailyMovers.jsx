@@ -1,9 +1,3 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import { DataGrid } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
-
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -21,7 +15,7 @@ export const columns = [
   },
   {
     field: "closePrice",
-    headerName: "Close",
+    headerName: "Closing",
     headerAlign: "center",
     type: "number",
     width: 150,

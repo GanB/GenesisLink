@@ -52,15 +52,13 @@ export const SmartContractProvider = ({ children }) => {
               transaction.timestamp.toNumber() * 1000
             ).toLocaleString(),
             message: transaction.message,
-            amount: parseInt(transaction.amount._hex) / 10 ** 18,
+            // amount: parseInt(transaction.amount._hex) / 10 ** 18,
+            amount: parseInt(transaction.amount._hex),
           })
         );
 
-        console.log(structuredTransactions);
-
         setTransactions(structuredTransactions);
       } else {
-        console.log("Ethereum is not present");
       }
     } catch (error) {
       console.log(error);
@@ -105,7 +103,6 @@ export const SmartContractProvider = ({ children }) => {
   };
 
   const connectWallet = async () => {
-    console.log("connectWallet - connecting to metamask wallet");
     try {
       if (!ethereum) return alert("Please install MetaMask.");
 
@@ -127,7 +124,8 @@ export const SmartContractProvider = ({ children }) => {
       if (ethereum) {
         const { addressTo, amount, message } = formData;
         const transactionsContract = createEthereumContract();
-        const parsedAmount = ethers.utils.parseEther(amount);
+        const ethValue = ethers.utils.formatEther(amount);
+        const parsedAmount = ethers.utils.parseEther(ethValue);
 
         await ethereum.request({
           method: "eth_sendTransaction",
@@ -148,9 +146,7 @@ export const SmartContractProvider = ({ children }) => {
         );
 
         setIsLoading(true);
-        console.log(`Loading - ${transactionHash.hash}`);
         await transactionHash.wait();
-        console.log(`Success - ${transactionHash.hash}`);
         setIsLoading(false);
 
         const transactionsCount =

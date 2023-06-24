@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import api from "../../config.json";
-// import "./Home.css";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import { rows, columns } from "../data/DailyMovers";
+import { columns } from "../data/DailyMovers";
 import Typography from "@mui/material/Typography";
-// import { AccountDetails } from "../account/AccountDetails";
+import { SmartContractContext } from "../../context/SmartContractContext";
+import TransactionCard from "../transactions/TransactionCard";
 
 const Home = () => {
-  const [stocksList, setStocksList] = useState([]);
+  const { transactions, currentAccount } = useContext(SmartContractContext);
+  const [cryptoDailyList, setCryptoDailyList] = useState([]);
   const [dataGridFormattted, setDataGridFormattted] = useState([]);
 
   const previousDay = () => {
     const previousDate = new Date(new Date().valueOf() - 1000 * 60 * 60 * 24);
-    console.log(previousDate.getDay());
     const previousDay = previousDate.getDay();
 
     if (previousDay === 0 || previousDay === 6) {
@@ -24,55 +24,50 @@ const Home = () => {
     return previousDate.toLocaleDateString("en-CA");
   };
 
-  const currencyFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-
-  console.log(previousDay());
-  const STOCK_SYMBOL_API = `${
-    api.STOCK_SYMBOLS
+  const CRYPTO_GROUPED_DAILY_API = `${
+    api.CRYPTO_GROUPED_DAILY
   }${previousDay()}?adjusted=true&apiKey=${process.env.REACT_APP_PG_API_KEY}`;
 
-  //   useEffect(() => {
-  //     const fetchStocksList = async () => {
-  //       const options = {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       };
-  //       const response = await fetch(STOCK_SYMBOL_API, options);
-  //       const stocksList = await response.json();
-  //       console.log(stocksList.results.slice(0, 100));
-  //       setStocksList(stocksList.results.slice(0, 100));
-  //     };
-  //     fetchStocksList();
-  //   }, []);
-
   useEffect(() => {
-    const dataGridRows = stocksList?.map((stock) => {
-      return {
-        id: stock.T,
-        closePrice: stock.c,
-        openPrice: stock.o,
-        high: stock.h,
-        low: stock.l,
-        numberOfTransactions: stock.n,
-        volume: stock.v.toLocaleString(),
-        volumeWeightedAveragePrice: stock.vw,
+    const getCryptoDailyList = async () => {
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       };
-    });
+      const response = await fetch(CRYPTO_GROUPED_DAILY_API, options);
+      const apiResponse = await response.json();
+      setCryptoDailyList(apiResponse?.results?.slice(0, 500));
+      const dataGridRows = apiResponse?.results
+        ?.slice(0, 500)
+        ?.map((crypto) => {
+          return {
+            id: crypto.T,
+            closePrice: crypto.c,
+            openPrice: crypto.o,
+            high: crypto.h,
+            low: crypto.l,
+            numberOfTransactions: crypto.n,
+            volume: crypto.v.toLocaleString(),
+            volumeWeightedAveragePrice: crypto.vw,
+          };
+        });
 
-    console.log(dataGridRows);
-    setDataGridFormattted(dataGridRows);
-  }, [stocksList]);
+      setDataGridFormattted(dataGridRows);
+    };
+    getCryptoDailyList();
+  }, []);
 
   return (
-    <Box sx={{ padding: "1rem" }}>
+    <Box sx={{ padding: "1rem", minHeight: "100vh", minWidth: "100vw" }}>
       <Box sx={{ height: 400, width: "100%", marginTop: "2rem" }}>
-        <Typography variant="h3" gutterBottom>
-          Market Data
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{ textAlign: "center", marginTop: "5%" }}
+        >
+          Market Daily Data (Grouped Aggregate)
         </Typography>
         <DataGrid
           rows={dataGridFormattted}
@@ -94,8 +89,27 @@ const Home = () => {
         />
       </Box>
       <Box sx={{ marginTop: "8rem" }}>
-        <Typography variant="h3">Latest Transactions</Typography>
-        {/* <AccountDetails /> */}
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{ textAlign: "center", marginTop: "5%" }}
+        >
+          Your Latest Transactions
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            alignContent: "center",
+            gap: "10px 30px",
+          }}
+        >
+          {transactions.map((item, index) => {
+            return <TransactionCard key={index} transactionDetail={item} />;
+          })}
+        </Box>
       </Box>
     </Box>
   );

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GenesisLink.DAL.Migrations
 {
-    public partial class InitialDBCreation : Migration
+    public partial class InitialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,7 +52,7 @@ namespace GenesisLink.DAL.Migrations
                 name: "MarketData",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newId()"),
                     Symbol = table.Column<string>(type: "NVARCHAR(50)", nullable: true),
                     LastKnownPrice = table.Column<decimal>(type: "Numeric(10,2)", nullable: true),
                     Volume = table.Column<decimal>(type: "Numeric(10,0)", nullable: true),
@@ -70,7 +70,7 @@ namespace GenesisLink.DAL.Migrations
                 name: "Wallets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newId()"),
                     WalletAddress = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
                     WalletName = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
                     ChainSource = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
@@ -224,7 +224,7 @@ namespace GenesisLink.DAL.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newId()"),
                     UserId = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
                     SourceWalletAddress = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
                     DestinationWalletAddress = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
@@ -249,7 +249,7 @@ namespace GenesisLink.DAL.Migrations
                 name: "UserMarketData",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newId()"),
                     UserId = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
                     MarketDataId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedBy = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
@@ -276,7 +276,7 @@ namespace GenesisLink.DAL.Migrations
                 name: "UserWallets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "newId()"),
                     UserId = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
                     WalletId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedBy = table.Column<string>(type: "NVARCHAR(450)", nullable: true),
@@ -302,12 +302,12 @@ namespace GenesisLink.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "01e6d854-ccbd-4dd6-9f14-823e56686e52", "2", "User", "User" });
+                values: new object[] { "db9ca8cd-0e40-43ed-80c8-265be1beeb26", "2", "User", "User" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "c8c22ff3-b9dd-4dbd-84bc-6999d841e8a5", "1", "Admin", "Admin" });
+                values: new object[] { "f1ab0e6f-8f74-4787-bed5-33e5de14c677", "1", "Admin", "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

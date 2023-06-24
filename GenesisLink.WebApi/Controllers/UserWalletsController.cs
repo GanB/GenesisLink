@@ -23,13 +23,13 @@ namespace GenesisLink.WebApi.Controllers
 
         // GET: api/UserWallets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserWallet>>> GetUserWallets()
+        public async Task<ActionResult<IEnumerable<UserWallet>>> GetUserWallets(string userId)
         {
           if (_context.UserWallets == null)
           {
               return NotFound();
           }
-            return await _context.UserWallets.ToListAsync();
+            return await _context.UserWallets.Include(x => x.WalletNav).Where(x => x.UserId == userId).ToListAsync();
         }
 
         // GET: api/UserWallets/5
