@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,13 +12,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import SearchIcon from "@mui/icons-material/Search";
-import InputBase from "@mui/material/InputBase";
-import { styled, alpha } from "@mui/material/styles";
 import "./NavBar.css";
 import api from "../../config.json";
-/*import { SearchBar } from "../search/SearchBar";*/
 
 const pages = ["Wallets", "Markets", "Transactions"];
 const settings = ["Profile", "SignOut"];
@@ -49,7 +44,6 @@ const NavBar = () => {
     <AppBar position="static" sx={{ backgroundColor: "#00296b" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
           <Typography
             variant="h6"
             noWrap
@@ -106,7 +100,6 @@ const NavBar = () => {
                 <MenuItem
                   key={page}
                   onClick={() => {
-                    console.log(page);
                     navigate(`/${page.toLowerCase()}`);
                   }}
                 >
@@ -115,7 +108,6 @@ const NavBar = () => {
               ))}
             </Menu>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
           <Typography
             variant="h5"
             noWrap
@@ -140,7 +132,6 @@ const NavBar = () => {
               <Button
                 key={page}
                 onClick={() => {
-                  console.log(page);
                   navigate(`/${page.toLowerCase()}`);
                 }}
                 sx={{ my: 2, color: "white", display: "block" }}
@@ -149,9 +140,6 @@ const NavBar = () => {
               </Button>
             ))}
           </Box>
-
-          {/* <SearchBar />*/}
-
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -181,7 +169,6 @@ const NavBar = () => {
                 <MenuItem
                   key={setting}
                   onClick={() => {
-                    console.log(setting);
                     if (setting.toLowerCase() === "signout") {
                       const signOutUserApi = async () => {
                         const options = {
@@ -197,14 +184,10 @@ const NavBar = () => {
                         );
 
                         if (!response.ok) {
-                          console.log(response.status, response.statusText);
                           window.alert(
                             "Unable to Signout. Please try again later."
                           );
                         } else {
-                          console.log(`User signed out succesfully`);
-                          // const signOutResponseFromApi = await response.json();
-                          // console.log(signOutResponseFromApi);
                           sessionStorage.clear();
                           navigate(`/`);
                         }

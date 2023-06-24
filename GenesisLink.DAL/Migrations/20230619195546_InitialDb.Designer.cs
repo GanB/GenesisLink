@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GenesisLink.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230611041457_InitialDBCreation")]
-    partial class InitialDBCreation
+    [Migration("20230619195546_InitialDb")]
+    partial class InitialDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -229,14 +229,14 @@ namespace GenesisLink.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c8c22ff3-b9dd-4dbd-84bc-6999d841e8a5",
+                            Id = "f1ab0e6f-8f74-4787-bed5-33e5de14c677",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "01e6d854-ccbd-4dd6-9f14-823e56686e52",
+                            Id = "db9ca8cd-0e40-43ed-80c8-265be1beeb26",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using GenesisLink.BOL;
 using GenesisLink.DAL;
+using System.Collections.ObjectModel;
 
 namespace GenesisLink.WebApi.Controllers
 {
@@ -41,6 +42,23 @@ namespace GenesisLink.WebApi.Controllers
               return NotFound();
           }
             var wallet = await _context.Wallets.FindAsync(id);
+
+            if (wallet == null)
+            {
+                return NotFound();
+            }
+
+            return wallet;
+        }
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult<Wallet>> CheckIfWalletExist(string walletAddress)
+        {
+            if (_context.Wallets == null)
+            {
+                return NotFound();
+            }
+            var wallet = await _context.Wallets.Where(s => s.WalletAddress == walletAddress).FirstOrDefaultAsync();
 
             if (wallet == null)
             {

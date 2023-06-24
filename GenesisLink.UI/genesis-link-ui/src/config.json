@@ -1,11 +1,8 @@
 {
-  "STOCK_SYMBOLS": "https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/",
-  "TICKER_SEARCH": "https://api.polygon.io/v3/reference/tickers/",
-  "STOCK_FINANCIALS": "https://api.polygon.io/vX/reference/financials",
-  "DAILY_OPEN_CLOSE": "https://api.polygon.io/v1/open-close/",
   "NEWS_API": "https://api.polygon.io/v2/reference/news",
-  "JS_TRADE_ORDER": "http://localhost:8088/tradeOrder/",
-  "JS_PORTFOLIO_WATCHLIST": "http://localhost:8088/portfolioWatchList/",
-  "JS_ACCOUNT": "http://localhost:8088/account/",
-  "ACCOUNTS": "https://localhost:7133/api/Accounts/"
+  "ACCOUNTS": "https://localhost:7133/api/Accounts/",
+  "CRYPTO_GROUPED_DAILY": "https://api.polygon.io/v2/aggs/grouped/locale/global/market/crypto/",
+  "APP_USER_DATA": "https://localhost:7133/api/Users/",
+  "WALLETS": "https://localhost:7133/api/Wallets/",
+  "USER_WALLETS": "https://localhost:7133/api/UserWallets"
 }
