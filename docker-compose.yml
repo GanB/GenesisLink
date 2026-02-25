@@ -1,0 +1,47 @@
+services:
+  hardhat:
+    image: node:18-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - hardhat_node_modules:/app/node_modules
+    command: sh -c "npm install --legacy-peer-deps && npx hardhat node --hostname 0.0.0.0"
+    ports:
+      - "8545:8545"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8545"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: GenesisLink.API/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Ethereum__RpcUrl=http://hardhat:8545
+      - Ethereum__TokenAddress=${TOKEN_ADDRESS:-}
+      - Ethereum__LoanAddress=${LOAN_ADDRESS:-}
+      - Ethereum__PaymentAddress=${PAYMENT_ADDRESS:-}
+      - Ethereum__CollateralAddress=${COLLATERAL_ADDRESS:-}
+    depends_on:
+      hardhat:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:5000
+      - NEXT_PUBLIC_CHAIN_ID=31337
+      - NEXT_PUBLIC_HARDHAT_RPC=http://localhost:8545
+    depends_on:
+      - backend
+
+volumes:
+  hardhat_node_modules:

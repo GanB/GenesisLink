@@ -1,0 +1,14 @@
+node_modules
+.git
+.claude
+artifacts
+cache
+typechain-types
+coverage
+frontend/.next
+frontend/node_modules
+backend/**/bin
+backend/**/obj
+*.env
+*.key
+*.pem
