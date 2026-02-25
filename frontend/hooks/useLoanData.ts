@@ -24,8 +24,6 @@ interface CreateLoanInput {
   collateralAmount: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
-
 export function useLoanData() {
   const { address } = useWallet();
   const [loans, setLoans] = useState<LoanData[]>([]);
@@ -36,7 +34,7 @@ export function useLoanData() {
     if (!address) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/loan/borrower/${address}`);
+      const res = await fetch(`/api/loan/borrower/${address}`);
       if (!res.ok) throw new Error("Failed to fetch loans");
       const data = await res.json();
       setLoans(data);
@@ -52,7 +50,7 @@ export function useLoanData() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/loan`, {
+        const res = await fetch("/api/loan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(input),

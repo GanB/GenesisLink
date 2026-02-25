@@ -21,8 +21,6 @@ interface CreateChannelInput {
   durationSeconds: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
-
 export function usePaymentChannel() {
   const { address } = useWallet();
   const [channels, setChannels] = useState<ChannelData[]>([]);
@@ -33,7 +31,7 @@ export function usePaymentChannel() {
     if (!address) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/payment/sender/${address}`);
+      const res = await fetch(`/api/payment/sender/${address}`);
       if (!res.ok) throw new Error("Failed to fetch channels");
       const data = await res.json();
       setChannels(data);
@@ -49,7 +47,7 @@ export function usePaymentChannel() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/payment`, {
+        const res = await fetch(`/api/payment`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(input),
@@ -70,7 +68,7 @@ export function usePaymentChannel() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_URL}/api/payment/${channelId}/close`, {
+        const res = await fetch(`/api/payment/${channelId}/close`, {
           method: "POST",
         });
         if (!res.ok) throw new Error("Failed to close channel");

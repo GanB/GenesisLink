@@ -38,7 +38,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:5000
+      - API_PROXY_URL=http://backend:5000
       - NEXT_PUBLIC_CHAIN_ID=31337
       - NEXT_PUBLIC_HARDHAT_RPC=http://localhost:8545
     depends_on:

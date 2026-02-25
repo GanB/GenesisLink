@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
-
 interface LoanSummary {
   id: string;
   borrowerAddress: string;
@@ -32,10 +30,10 @@ export default function ExplorerPage() {
     async function fetchData() {
       try {
         const [loansRes, channelsRes, blockRes, chainRes] = await Promise.all([
-          fetch(`${API_URL}/api/loan`),
-          fetch(`${API_URL}/api/payment`),
-          fetch(`${API_URL}/api/blockchain/latest-block`),
-          fetch(`${API_URL}/api/blockchain/chain-id`),
+          fetch(`/api/loan`),
+          fetch(`/api/payment`),
+          fetch(`/api/blockchain/latest-block`),
+          fetch(`/api/blockchain/chain-id`),
         ]);
 
         if (loansRes.ok) setLoans(await loansRes.json());
