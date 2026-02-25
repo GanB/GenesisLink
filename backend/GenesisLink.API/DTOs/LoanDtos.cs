@@ -1,19 +1,34 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace GenesisLink.API.DTOs;
+
+public partial class EthereumAddressAttribute : ValidationAttribute
+{
+    [GeneratedRegex(@"^0x[0-9a-fA-F]{40}$")]
+    private static partial Regex EthAddressRegex();
+
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+        if (value is not string addr || !EthAddressRegex().IsMatch(addr))
+            return new ValidationResult("Must be a valid Ethereum address (0x + 40 hex chars)");
+        return ValidationResult.Success;
+    }
+}
 
 public record CreateLoanRequest
 {
     [Required]
+    [EthereumAddress]
     public string BorrowerAddress { get; init; } = string.Empty;
 
-    [Range(0.01, double.MaxValue)]
+    [Range(0.01, (double)1_000_000_000)]
     public decimal Principal { get; init; }
 
     [Range(1, 365)]
     public int TermDays { get; init; }
 
-    [Range(0, double.MaxValue)]
+    [Range(0, (double)1_000_000_000)]
     public decimal CollateralAmount { get; init; }
 }
 

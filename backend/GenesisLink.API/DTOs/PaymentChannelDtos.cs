@@ -5,12 +5,14 @@ namespace GenesisLink.API.DTOs;
 public record CreateChannelRequest
 {
     [Required]
+    [EthereumAddress]
     public string SenderAddress { get; init; } = string.Empty;
 
     [Required]
+    [EthereumAddress]
     public string RecipientAddress { get; init; } = string.Empty;
 
-    [Range(0.01, double.MaxValue)]
+    [Range(0.01, (double)1_000_000_000)]
     public decimal Deposit { get; init; }
 
     [Range(1, 2592000)] // max 30 days in seconds

@@ -48,11 +48,16 @@ contract GenesisCollateral is Ownable, ReentrancyGuard {
     function depositCollateral(uint256 loanId, uint256 amount) external nonReentrant {
         if (amount == 0) revert ZeroAmount();
 
-        collaterals[loanId] = CollateralInfo({
-            depositor: msg.sender,
-            amount: collaterals[loanId].amount + amount,
-            withdrawn: false
-        });
+        CollateralInfo storage info = collaterals[loanId];
+        if (info.depositor == address(0)) {
+            // First deposit — set depositor
+            info.depositor = msg.sender;
+        } else if (info.depositor != msg.sender) {
+            // Subsequent deposit must be from original depositor
+            revert Unauthorized();
+        }
+        info.amount += amount;
+        info.withdrawn = false;
 
         collateralToken.safeTransferFrom(msg.sender, address(this), amount);
         emit CollateralDeposited(loanId, msg.sender, amount);

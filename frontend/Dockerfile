@@ -13,9 +13,12 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-RUN mkdir -p public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+RUN addgroup --gid 1001 --system appgroup && adduser --uid 1001 --system appuser --ingroup appgroup
+RUN mkdir -p public && chown -R appuser:appgroup /app
+COPY --from=builder --chown=appuser:appgroup /app/.next/standalone ./
+COPY --from=builder --chown=appuser:appgroup /app/.next/static ./.next/static
+
+USER appuser
 
 EXPOSE 3000
 ENV PORT=3000

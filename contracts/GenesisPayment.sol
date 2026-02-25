@@ -37,6 +37,10 @@ contract GenesisPayment is Ownable, ReentrancyGuard, EIP712 {
 
     /// @notice Channel ID => Channel info
     mapping(bytes32 => Channel) public channels;
+    /// @notice Used nonces per channel to prevent replay
+    mapping(bytes32 => mapping(uint256 => bool)) public usedNonces;
+    /// @notice Incrementing counter to prevent channel ID collisions
+    uint256 private _channelNonce;
 
     bytes32 private constant PAYMENT_TYPEHASH =
         keccak256("Payment(bytes32 channelId,uint256 amount,uint256 nonce)");
@@ -64,7 +68,7 @@ contract GenesisPayment is Ownable, ReentrancyGuard, EIP712 {
         if (deposit == 0) revert ZeroAmount();
         if (durationSeconds == 0 || durationSeconds > 30 days) revert InvalidDuration();
 
-        channelId = keccak256(abi.encodePacked(msg.sender, recipient, block.timestamp));
+        channelId = keccak256(abi.encode(msg.sender, recipient, block.timestamp, _channelNonce++));
 
         if (channels[channelId].sender != address(0)) revert ChannelAlreadyExists(channelId);
 
@@ -96,6 +100,8 @@ contract GenesisPayment is Ownable, ReentrancyGuard, EIP712 {
         if (channel.state != ChannelState.OPEN) revert ChannelNotOpen(channelId);
         if (msg.sender != channel.recipient) revert Unauthorized();
         if (amount > channel.deposit) revert AmountExceedsDeposit(amount, channel.deposit);
+        if (usedNonces[channelId][nonce]) revert InvalidSignature();
+        usedNonces[channelId][nonce] = true;
 
         // Verify EIP-712 signature from sender
         bytes32 structHash = keccak256(abi.encode(PAYMENT_TYPEHASH, channelId, amount, nonce));

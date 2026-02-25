@@ -1,6 +1,6 @@
-# Security Analysis Report
+# Security Report
 
-## Smart Contract Security (SAST)
+## Smart Contract Security
 
 ### Coverage Results
 - **Statements**: 98.86%
@@ -8,61 +8,69 @@
 - **Functions**: 100%
 - **Lines**: 99.12%
 
-### Security Patterns Applied
+### Security Patterns
+- **Reentrancy Protection**: All state-changing functions with external calls use OpenZeppelin `ReentrancyGuard`
+- **Access Control**: Owner-only functions guarded by OpenZeppelin `Ownable`, depositor-only withdrawals via `msg.sender` checks
+- **Custom Errors**: Gas-efficient custom errors instead of revert strings
+- **Safe Token Transfers**: All ERC-20 operations use OpenZeppelin `SafeERC20`
+- **Integer Overflow Protection**: Solidity ^0.8.24 built-in overflow/underflow checks
+- **EIP-712 Typed Signatures**: Payment channels use EIP-712 for signed vouchers with domain separation
+- **Nonce Replay Protection**: Used nonces tracked per channel to prevent signature replay
+- **Collision-Resistant Channel IDs**: Channel IDs use `abi.encode` with incrementing nonce to prevent collisions
+- **Depositor Protection**: Collateral deposits enforce same-depositor for additional deposits to prevent overwrites
 
-#### Reentrancy Protection
-All state-changing functions with external calls use OpenZeppelin's `ReentrancyGuard` (`nonReentrant` modifier):
-- `GenesisCollateral`: depositCollateral, withdrawCollateral, liquidate
-- `GenesisLoan`: approveLoan, repayLoan
-- `GenesisPayment`: openChannel, closeChannel, forceClose
-
-#### Access Control
-- Owner-only functions guarded by OpenZeppelin `Ownable` (`onlyOwner`)
-- Depositor-only withdrawals verified with explicit `msg.sender` checks
-- Custom `Unauthorized` errors for fine-grained access control
-
-#### Custom Errors (Gas Efficient)
-All contracts use custom errors instead of revert strings:
-- `ZeroAmount`, `LoanNotFound`, `InvalidLoanState`, `Unauthorized`
-- `ChannelNotFound`, `InvalidSignature`, `AmountExceedsDeposit`
-
-#### Safe Token Transfers
-All ERC-20 operations use OpenZeppelin `SafeERC20`:
-- `safeTransferFrom` for deposits
-- `safeTransfer` for withdrawals/disbursements
-
-#### Integer Overflow Protection
-- Solidity ^0.8.24 provides built-in overflow/underflow checks
-- No unchecked arithmetic blocks
-
-#### EIP-712 Typed Signatures
-- GenesisPayment uses EIP-712 for payment voucher signatures
-- Prevents cross-contract replay attacks via domain separator
-- Prevents cross-chain replay via chainId in domain
-
-### Potential Considerations
+### Informational Notes
 1. **Centralization Risk**: Owner can approve loans, mark defaults, and liquidate. For production, consider multi-sig or DAO governance.
-2. **Oracle Dependency**: LTV calculations use on-chain principal/collateral. For real-world use, integrate Chainlink price feeds.
-3. **Flash Loan Attack Surface**: Collateral deposits and loan approvals happen in separate transactions, mitigating flash loan manipulation.
+2. **Oracle Dependency**: LTV calculations use on-chain amounts. For real-world use, integrate Chainlink price feeds.
 
 ## Backend Security
 
 ### API Security
-- CORS restricted to frontend origin
-- Input validation via `[Required]`, `[Range]` data annotations on all DTOs
-- No SQL injection risk (in-memory store, no database)
-- Error responses use generic messages (no stack traces in production)
+- **CORS**: Restricted to configured origins (default: `http://localhost:3000`)
+- **Input Validation**: `[Required]`, `[Range]`, custom `[EthereumAddress]` regex validation on all DTOs
+- **Ethereum Address Validation**: Enforces `^0x[0-9a-fA-F]{40}$` pattern, blocks XSS/SQL injection payloads
+- **Rate Limiting**: Fixed window limiter (100 requests/minute) via ASP.NET Core middleware
+- **Security Headers**: X-Content-Type-Options, X-Frame-Options, Referrer-Policy, CSP, X-XSS-Protection
+- **No Stack Traces**: Error responses use generic messages in production
 
-### OWASP Top 10 Assessment
+### Test Results
+- 21 backend integration tests passing (loan lifecycle, payment channels, input validation, security headers)
+
+## Frontend Security
+
+### Security Measures
+- **API Proxy Allowlisting**: Server-side proxy only forwards to `/api/loan`, `/api/payment`, `/api/blockchain` paths
+- **Security Headers**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy configured in next.config.js
+- **No Server Disclosure**: `X-Powered-By` header disabled
+- **Client-side Validation**: Ethereum address pattern validation on forms
+- **No Secrets in Frontend**: API proxy URL is server-side only (not `NEXT_PUBLIC_`)
+
+## Docker Security
+
+- **Non-root Containers**: Both backend and frontend run as `appuser` (UID 1001)
+- **Multi-stage Builds**: Build artifacts separated from runtime images
+- **No Secrets in Images**: Environment variables injected at runtime via docker-compose
+
+## OWASP Top 10 Assessment
+
 | # | Category | Status |
 |---|----------|--------|
-| A01 | Broken Access Control | Mitigated - Owner-only contract functions |
+| A01 | Broken Access Control | Mitigated - Owner-only contract functions, CORS, proxy allowlisting |
 | A02 | Cryptographic Failures | Mitigated - EIP-712 signatures, no hardcoded keys |
-| A03 | Injection | N/A - No SQL, in-memory store |
-| A04 | Insecure Design | Mitigated - ReentrancyGuard, SafeERC20 |
-| A05 | Security Misconfiguration | Mitigated - Strict CORS, no debug in prod |
-| A06 | Vulnerable Components | Mitigated - OpenZeppelin v5, latest deps |
-| A07 | Auth Failures | Mitigated - On-chain ownership, signatures |
-| A08 | Data Integrity | Mitigated - EIP-712 typed data signing |
+| A03 | Injection | Mitigated - Ethereum address regex validation, no SQL, in-memory store |
+| A04 | Insecure Design | Mitigated - ReentrancyGuard, SafeERC20, nonce tracking |
+| A05 | Security Misconfiguration | Mitigated - Security headers, non-root Docker, no debug in prod |
+| A06 | Vulnerable Components | Mitigated - OpenZeppelin v5, Newtonsoft.Json 13.0.3, latest deps |
+| A07 | Auth Failures | Mitigated - On-chain ownership, EIP-712 signatures |
+| A08 | Data Integrity | Mitigated - EIP-712 typed data signing, nonce replay protection |
 | A09 | Logging | Implemented - ILogger on all controllers |
-| A10 | SSRF | N/A - No outbound requests from API |
+| A10 | SSRF | Mitigated - Proxy path allowlisting, blocked non-API paths |
+
+## Test Summary
+
+| Suite | Tests | Status |
+|-------|-------|--------|
+| Smart Contract Unit Tests | 62 | Passing |
+| Smart Contract Integration Tests | 8 | Passing |
+| Backend Integration Tests | 21 | Passing |
+| **Total** | **91** | **All Passing** |

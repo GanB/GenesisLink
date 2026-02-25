@@ -2,4 +2,5 @@
   <Project Path="GenesisLink.API/GenesisLink.API.csproj" />
   <Project Path="GenesisLink.Core/GenesisLink.Core.csproj" />
   <Project Path="GenesisLink.Infrastructure/GenesisLink.Infrastructure.csproj" />
+  <Project Path="GenesisLink.Tests/GenesisLink.Tests.csproj" />
 </Solution>

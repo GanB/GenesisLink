@@ -13,6 +13,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
+RUN groupadd --gid 1001 appgroup && useradd --uid 1001 --gid appgroup --no-create-home appuser
+USER appuser
+
 EXPOSE 5000
 ENV ASPNETCORE_URLS=http://+:5000
 ENTRYPOINT ["dotnet", "GenesisLink.API.dll"]

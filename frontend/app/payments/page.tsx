@@ -48,6 +48,8 @@ export default function PaymentsPage() {
           <input
             type="text"
             required
+            pattern="^0x[0-9a-fA-F]{40}$"
+            title="Enter a valid Ethereum address (0x + 40 hex characters)"
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-genesis-500 font-mono text-sm"
