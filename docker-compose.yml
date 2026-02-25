@@ -1,6 +1,6 @@
 services:
   hardhat:
-    image: node:18-alpine
+    image: node:20-alpine
     working_dir: /app
     volumes:
       - .:/app
@@ -9,17 +9,18 @@ services:
     ports:
       - "8545:8545"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8545"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8545"]
       interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 30
+      start_period: 60s
 
   backend:
     build:
       context: ./backend
       dockerfile: GenesisLink.API/Dockerfile
     ports:
-      - "5000:5000"
+      - "5050:5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - Ethereum__RpcUrl=http://hardhat:8545
