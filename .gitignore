@@ -422,4 +422,23 @@ yarn-debug.log*
 yarn-error.log*
 
 # api keys
-.env 
+.env
+
+# Claude Code
+.claude/
+
+# Hardhat / Solidity
+artifacts/
+cache/
+typechain-types/
+coverage/
+
+# Secrets
+*.key
+*.pem
+secrets.*
+!.env.example
+
+# Next.js
+frontend/.next/
+frontend/out/
